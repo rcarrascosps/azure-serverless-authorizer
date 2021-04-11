@@ -102,6 +102,7 @@ func handleRequest(ctx context.Context, event events.APIGatewayCustomAuthorizerR
 
 		log.Println("ExtractTokenInfo")
 		tokenData.ExtractTokenInfo()
+		// This will crash in case the token has no scopes. 
 		log.Println("ExtractScopes")
 		tokenData.ExtractScopes()
 
