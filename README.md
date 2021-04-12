@@ -14,3 +14,20 @@ https://github.com/RafPe/okta-serverless-authorizer
 
 ## Deployment process into AWS
 
+Pre-requisites are:
+
+1. Serverless (sls) CLI
+2. Go 
+3. npm
+
+To download and install Serverless (sls) CLI:
+https://www.serverless.com/framework/docs/getting-started/
+
+To download and install go:
+https://www.tecmint.com/install-go-in-linux/
+
+To download and instal npm:
+https://www.npmjs.com/get-npm
+
+## Compile 
+
