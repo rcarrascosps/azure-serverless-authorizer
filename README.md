@@ -12,7 +12,7 @@ This code is based on this repository:
 
 https://github.com/RafPe/okta-serverless-authorizer
 
-All credits on RafPe, who designed this.
+**All credits on RafPe, who designed this.**
 
 # Use case
 
@@ -27,10 +27,26 @@ AWS API Gateway will receive the request from those different applications; the 
 
 If the token is valid and the scope is the expected one, then the lamda will return a succesful authorization, otherwise it will not authorize it.
 
+The model is this one:
+
 ![Lambda Authorizer](https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2020/03/22/Secure-API-Gateway-b-Figure-1.png)
 
+If you want to learn more about it, please take a look into AWS official documentation: https://aws.amazon.com/blogs/security/use-aws-lambda-authorizers-with-a-third-party-identity-provider-to-secure-amazon-api-gateway-rest-apis/
 
-## Deployment process into AWS
+
+## Files description
+
+This project includes two lambda functions:
+1. Authorizer function. This one represent the lambda with the token validation and authorization logic. Source coude is in auth/main.go
+2. Func1. This one is a sample lamda function, that represent the resource that the application, ultimately, wants to call. In order to access it, you need to have a valid JWT token
+
+All the assets can be deployed using sls (Serverlss) and therefore there are two relevant files:
+* serverless.env.yml
+* serverless.yml
+
+The second one describe what we are going to create in AWS.
+
+## Deployment pre-requisites
 
 Pre-requisites are:
 
@@ -47,5 +63,49 @@ https://www.tecmint.com/install-go-in-linux/
 To download and instal npm:
 https://www.npmjs.com/get-npm
 
+You need to build both of the functions, which is decribed in the next section.
+
 ## Build 
 
+To build both functions, execute:
+
+go build -ldflags="-s -w" -o bin/func1 func1/main.go
+go build -ldflags="-s -w" -o bin/auth auth/main.go
+
+## Deploy your functions. Create the stack
+
+Since we are using sls, you just need to execute this:
+
+sls deploy -s dev --verbose
+
+## Validation
+
+In order to validate it, you need to get obtain an access token from Azure. For example:
+
+```
+curl --location --request GET 'https://login.microsoftonline.com/spsolutions.com.mx/oauth2/v2.0/token' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--header 'Cookie: fpc=ApwAasdfadw5K4-whGhirlkJjfxWN2xWG8AQAAABqnBtgOAAAA; stsservicecookie=estsfd; x-ms-gateway-slice=estsfd' \
+--data-urlencode 'grant_type=password' \
+--data-urlencode 'client_id=34331de76-3432436-42349ae-97bc-6gadfafasdfse1e' \
+--data-urlencode 'scope=myScope' \
+--data-urlencode 'client_secret=Jadfasfsafasdafasf' \
+--data-urlencode 'username=your_user' \
+--data-urlencode 'password=your password'
+```
+This will return a JWT token.
+
+Once with the token, you can get access to the Func1 via AWS API Gateway:
+
+```
+curl --location --request GET 'https://e3qaeh.execute-api.us-east-2.amazonaws.com/dev/hello' \
+--header 'Authorization: Bearer your_access_token'
+```
+Replace *your_access_token* with the previously obtained access token.
+
+If you are wondering, from were I get the endpoint  (e3qaeh.execute-api.us-east-2.amazonaws.com), in specif *e3qaeh*, go to the API Gateway section from your AWS console:
+
+## Destroy the stack
+
+If you want to delete everything that was created, simple execute:
+sls remove -s dev --verbose
