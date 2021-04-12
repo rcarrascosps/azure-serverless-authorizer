@@ -105,7 +105,10 @@ Replace *your_access_token* with the previously obtained access token.
 
 If you are wondering, from were I get the endpoint  (e3qaeh.execute-api.us-east-2.amazonaws.com), in specif *e3qaeh*, go to the API Gateway section from your AWS console:
 
+![API ID](images/aws_apigwy.png)
+
 ## Destroy the stack
 
 If you want to delete everything that was created, simple execute:
 sls remove -s dev --verbose
+
