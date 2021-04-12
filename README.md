@@ -37,5 +37,5 @@ https://www.tecmint.com/install-go-in-linux/
 To download and instal npm:
 https://www.npmjs.com/get-npm
 
-## Compile 
+## Build 
 
