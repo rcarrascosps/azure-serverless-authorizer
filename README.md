@@ -12,3 +12,5 @@ This code is based on this repository:
 
 https://github.com/RafPe/okta-serverless-authorizer
 
+## Deployment process into AWS
+
