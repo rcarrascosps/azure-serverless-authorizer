@@ -1,4 +1,4 @@
-# azure-serverless-authorizer
+# Azure Serverless Authorizer
 Serverless based AWS API Gateway Authorizer using Azure JWT.
 
 This lambda function will receive the Azure JWT token and will:
