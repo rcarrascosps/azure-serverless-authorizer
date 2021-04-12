@@ -44,4 +44,4 @@ functions:
   auth:
     handler: bin/auth
     environment:
-      OKTA_PUBLIC_KEY: ${file(./serverless.env.yml):${self:provider.stage}.OKTA_PUBLIC_KEY}    
+      AZURE_PUBLIC_KEY: ${file(./serverless.env.yml):${self:provider.stage}.AZURE_PUBLIC_KEY}    
