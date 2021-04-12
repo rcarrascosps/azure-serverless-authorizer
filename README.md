@@ -33,6 +33,25 @@ The model is this one:
 
 If you want to learn more about it, please take a look into AWS official documentation: https://aws.amazon.com/blogs/security/use-aws-lambda-authorizers-with-a-third-party-identity-provider-to-secure-amazon-api-gateway-rest-apis/
 
+The Lambda Authorizer will return this:
+
+```
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "execute-api:Invoke"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:execute-api:us-east-2:130537859737:fe3qaenskh/ESTestInvoke-stage/GET/"
+      ]
+    }
+  ]
+}
+```
+That's the case of a valid authorization, that will let know the API Gateway to allow the user/client request. Otherwise, an Unauthorized message will be return.
 
 ## Files description
 
@@ -74,6 +93,16 @@ To build both functions, execute:
 
 ## Deploy your functions. Create the stack
 
+You need first to include the public key of the JWT token into the serverless.env.yml file. 
+In order to get this, you can use jwt.io to read the token and then copy and paste it into the file:
+![API ID](images/publickey.png)
+
+Just keep in mind that you need to use some change of line characters, for example:
+
+```
+AZURE_PUBLIC_KEY: "-----BEGIN RSA PUBLIC KEY-----\nMIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlGdfGiqSt4QI57Z\npTk2RJ7MbGd8/hGp/zSbF7Ofz75TUbHaE3YCl/0WjCVszk4V+/VaJq5SWWZ\n6F7Q/ifbHP9/j4rL8VMDl7ve4MeuxyQviYuybRp3nsGNOWxuVxpnjC6ZDGbLuech\n2BCBCMFRmPc89p3sTNYlYfCn5Hy5NRKfCgqI/R6AuVBU626dcQVn0R42/wm8esFP\na/Js0ez8Fl1yUktSe/SMQcVM0V9fpZpsoMZ0HdpGQ3YgquIlAIXt2yhO1iAiMnA4\nzTsuZ+eQLfhNbuANqEAGS1b0bPvTnkg7eYifeptdJHyHv9wWtcDsd+vMUlS7iJow\n2QIDB\n-----END RSA PUBLIC KEY-----"
+```
+
 Since we are using sls, you just need to execute this:
 
 sls deploy -s dev --verbose
@@ -106,6 +135,18 @@ Replace *your_access_token* with the previously obtained access token.
 If you are wondering, from were I get the endpoint  (e3qaeh.execute-api.us-east-2.amazonaws.com), in specif *e3qaeh*, go to the API Gateway section from your AWS console:
 
 ![API ID](images/aws_apigwy.png)
+
+## Scopes validation and authorization
+
+In our serverless.env.yml we've incorporated a list of scopes:
+```
+  SCOPES: "scope1 scope2 scope3"
+```
+
+Those scopes are a sample list, you need to incorporate your own scopes. 
+In order to validate them, in file auth/main.go , at lines 97, 98, 99 there is an explanation on how to read the scopes, and then you will have to validate them
+with the ones that the token include, and with that authorize or not.
+
 
 ## Destroy the stack
 
