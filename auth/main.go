@@ -73,18 +73,7 @@ func handleRequest(ctx context.Context, event events.APIGatewayCustomAuthorizerR
 		return events.APIGatewayCustomAuthorizerResponse{}, errors.New("Token is invalid")
 	}
 
-	// SCENARIO 1: Extract programatically from JWK
-	//
-	// rsaPublic, _ := pubKey.(rsa.PublicKey)
-	// savePublicPEMKey(rsaPublic)
-
-	// SCENARIO 2: Extract RSAPublicKeyFromPEM from the file
-	//
-	// bytes, _ := ioutil.ReadFile("./okta-jwk.pub")
-
-	// SCENARIO 3: Extract RSAPublicKeyFromPEM from env var
-	//
-	certFromEnv := os.Getenv("OKTA_PUBLIC_KEY")
+	certFromEnv := os.Getenv("AZURE_PUBLIC_KEY")
 	log.Println(certFromEnv)
 
 	bytes := []byte(certFromEnv)
@@ -105,6 +94,7 @@ func handleRequest(ctx context.Context, event events.APIGatewayCustomAuthorizerR
 		// This will crash in case the token has no scopes. 
 		log.Println("ExtractScopes")
 		tokenData.ExtractScopes()
+		// from here, we need to read the scopes and validate them against the ones we want the API to be allowed
 
 		return generatePolicy(tokenData, "Allow", event.MethodArn), nil
 	}
