@@ -69,8 +69,8 @@ You need to build both of the functions, which is decribed in the next section.
 
 To build both functions, execute:
 
-go build -ldflags="-s -w" -o bin/func1 func1/main.go
-go build -ldflags="-s -w" -o bin/auth auth/main.go
+* go build -ldflags="-s -w" -o bin/func1 func1/main.go
+* go build -ldflags="-s -w" -o bin/auth auth/main.go
 
 ## Deploy your functions. Create the stack
 
